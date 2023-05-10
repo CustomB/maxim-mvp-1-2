@@ -1,12 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from src.bot import Bot
+from src.interfaces import MessageRequest
 
-
-class MessageRequest(BaseModel):
-    message: str
-    bot_role: str
-    user_id: str
 
 
 app = FastAPI()
