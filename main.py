@@ -15,4 +15,4 @@ bots = {
 
 @app.post("/talk/")
 async def talk(req: MessageRequest):
-    return {"response": bots[req.bot_role].talk_to_bot(req.message)}
+    return {"response": bots[req.bot_role].run(req.message)}
