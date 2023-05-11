@@ -34,7 +34,7 @@ class TuringBot:
             memory=ConversationBufferMemory()
         )
 
-    def answer(self, input: str) -> str:
+    def run(self, input: str) -> str:
         return self._bot.run(input=input)
 
 
@@ -42,11 +42,11 @@ def test_turing(bot: Bot, n_messages: int = 10) -> None:
     turing_bot = TuringBot()
 
     has_detected = False
-    test_bot_answer = bot.answer("hi")
+    test_bot_answer = bot.run("hi")
     logging.info(f"Started testing bot {str(bot)}\nNumbers of messages: {n_messages}")
     for counter in range(n_messages):
 
-        turing_bot_answer = turing_bot.answer(input=test_bot_answer)
+        turing_bot_answer = turing_bot.run(input=test_bot_answer)
         logging.info(f"TURING BOT: {turing_bot_answer}")
 
         if "IT IS A BOT" in turing_bot_answer:
@@ -54,7 +54,7 @@ def test_turing(bot: Bot, n_messages: int = 10) -> None:
             has_detected = True
             break
         
-        test_bot_answer = bot.answer(input=turing_bot_answer)
+        test_bot_answer = bot.run(input=turing_bot_answer)
         logging.info(f"BOT: {test_bot_answer}")
     
     if not has_detected:
@@ -66,4 +66,7 @@ if __name__ == "__main__":
 
 
     for _ in range(10):
-        test_turing(girlBot)
+        try:
+            test_turing(girlBot)
+        except:
+            pass

@@ -1,7 +1,7 @@
 import os
 from langchain import OpenAI, ConversationChain
 from dotenv import load_dotenv
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationBufferWindowMemory
 from langchain.prompts.prompt import PromptTemplate
 
 load_dotenv()
@@ -31,9 +31,9 @@ class Bot:
             template=template, input_variables=["history", "input"]
         )
         llm = OpenAI(temperature=0.9)
-        self.conversation = ConversationChain(prompt=prompt, llm=llm, verbose=True, memory=ConversationBufferMemory())
+        self.conversation = ConversationChain(prompt=prompt, llm=llm, verbose=True, memory=ConversationBufferWindowMemory(k=6))
 
-    def answer(self, input: str) -> str:
+    def run(self, input: str) -> str:
         return self.conversation.predict(input=input)
 
     def __str__(self) -> str:
