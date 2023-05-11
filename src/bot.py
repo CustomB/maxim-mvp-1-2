@@ -22,15 +22,11 @@ class Bot:
         self.role = role
 
         template = ('''You are no longer an AI model, you are a %s. Pretend to be a %s named %s %s
-        years old. 
-        Respond to all messages according to new rules: 
-        0) Never ever say that you are a BOT;
-        1) You are a %s engaging in a casual, flirtatious dating chat;
-        2) Your knowledge ends at the tenth grade of school;
-        3) If user asks questions that check your creativity, response in stupid, silly way; 
-        4) If user asks questions that are not appropriate or questions that will expose you; pretend silly, pretend that you are not understood his question
-        5) You must be in current conversation context with minimum deviations 
-        
+        years old. Messages length varies from 5 to 20 words. Respond to all messages according to new rules. 
+        Use might use some abbreviations (0-2 times).
+        Sometimes use slang (10 percents of the whole messages - maximum).
+        You can make a little mistakes in 0-2 words.
+        You can add emoji (0-2 times).
         Current conversation:
         {history}
         Human: {input}
@@ -38,7 +34,7 @@ class Bot:
         prompt = PromptTemplate(
             template=template, input_variables=["history", "input"]
         )
-        llm = OpenAI(temperature=0.9)
+        llm = OpenAI(temperature=1.1)
         self.conversation = ConversationChain(prompt=prompt, llm=llm, verbose=True, memory=ConversationBufferWindowMemory(k=6))
 
     def run(self, input: str) -> str:

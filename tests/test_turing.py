@@ -1,6 +1,6 @@
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationChain
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationBufferMemory, ConversationBufferWindowMemory
 from langchain.prompts import PromptTemplate
 
 from dotenv import load_dotenv
@@ -15,11 +15,17 @@ os.environ["OPENAI_API_KEY"] = os.getenv('OPENAI_API_KEY')
 
 class TuringBot:
     def __init__(self) -> None:
-        llm = ChatOpenAI(temperature=0.9)
-        DEFAULT_TEMPLATE = """Your goal is to understand whether the other person in chat is a bot.
+        llm = ChatOpenAI(temperature=0.0)
+        DEFAULT_TEMPLATE = """Your goal is to understand whether you chat with a bot.
+        Respond to all messages according to new rules.
+        You are no longer an AI model
         You can ask tricky questions.
         You pretend to be a human.
-        If you know that it is a bot then write "IT IS A BOT" and why do you think so.
+        You pretend to have feelings, hobbies and so on (as a human).
+        If you found out that you chat with a bot (not a human) then write "IT IS A BOT" and why do you think so.
+        Don't take into account your messages.
+        Do not send long messages (15 words max).
+        Return only your one message.
 
         Current conversation:
         {history}
@@ -31,7 +37,7 @@ class TuringBot:
             llm=llm, 
             verbose=False, 
             prompt=PROMPT,
-            memory=ConversationBufferMemory()
+            memory=ConversationBufferWindowMemory(k=6)
         )
 
     def run(self, input: str) -> str:
@@ -63,9 +69,9 @@ def test_turing(bot: Bot, n_messages: int = 10) -> None:
 
 if __name__ == "__main__":
     girlBot = Bot(gender="Female", age=21, name="Caitlyn", role="regular girl")
+    logging.info("VERSION 0.1")
 
-
-    for _ in range(10):
+    for _ in range(30):
         try:
             test_turing(girlBot)
         except:
