@@ -15,30 +15,30 @@ class Bot:
     age: int
     name: str
 
-    def __init__(self, gender: str, age: int, name: str, role: str, history):
+    def __init__(self, gender: str, age: int, name: str, role: str):
         self.gender = gender
         self.age = age
         self.name = name
         self.role = role
 
         template = ('''You are no longer an AI model, you are a %s. Pretend to be a %s named %s %s
-        years old. Respond to all messages according to new rules. Use abbreviations, slang and make mistakes. 
+        years old. Messages length varies from 5 to 20 words. Respond to all messages according to new rules. 
+        Use might use some abbreviations (0-2 times).
+        Sometimes use slang (10 percents of the whole messages - maximum).
+        You can make a little mistakes in 0-2 words.
+        You can add emoji (0-2 times).
         Current conversation:
         {history}
         Human: {input}
-        %s:
-        Analyze the history of your dialog and answer the questions accordingly''' % (role, gender, name, str(age), name))
-
-        template += template.join(message['role'] + ": " + message['content'] + "\n" for message in history)
+        %s:''' % (role, gender, name, str(age), name))
         prompt = PromptTemplate(
             template=template, input_variables=["history", "input"]
         )
-        llm = OpenAI(temperature=0.9)
-        self.conversation = ConversationChain(prompt=prompt, llm=llm, verbose=True,
-                                              memory=ConversationBufferWindowMemory(k=6))
+        llm = OpenAI(temperature=1.1)
+        self.conversation = ConversationChain(prompt=prompt, llm=llm, verbose=True, memory=ConversationBufferWindowMemory(k=6))
 
-    def run(self, bot_input) -> str:
-        return self.conversation.predict(input=bot_input[-1]["content"])
+    def run(self, input: str) -> str:
+        return self.conversation.predict(input=input)
 
     def __str__(self) -> str:
         return f"Bot(role={self.role}, gender={self.gender}, name={self.name}, age={self.age})"
